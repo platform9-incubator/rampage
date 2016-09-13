@@ -15,6 +15,7 @@ setup(
         'python-cinderclient',
         'python-glanceclient',
         'python-neutronclient',
+        'pyvmomi',
         'requests'
     ],
     tests_require=[],
