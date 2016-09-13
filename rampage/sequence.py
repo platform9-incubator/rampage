@@ -12,10 +12,12 @@ class Step(object):
         self.kwargs = kwargs
         self.result = None
         self.errors = []
+        self.complete = False
 
     def run(self):
         try:
             self.result = self.func(*self.args, **self.kwargs)
+            self.complete = True
         except Exception as e:
             self.errors.append({'exception': e,
                                  'traceback': traceback.format_exc()})
@@ -23,10 +25,10 @@ class Step(object):
         return self.errors[-1]
 
     def __repr__(self):
-        return '%s(%s, %s)' % \
-               (self.func.__name__,
-                ', '.join(self.args),
-                ', '.join(['%s=%s' % i for i in self.kwargs.iteritems()]))
+        all_args = list(self.args) + \
+                   ['%s=%s' % i for i in self.kwargs.iteritems()]
+        return '%s(%s)' % (self.func.__name__, ', '.join(all_args))
+                
 
 class Sequence(object):
     def __init__(self, max_step_failures):
@@ -43,14 +45,14 @@ class Sequence(object):
             raise RuntimeError('Step %s failed %s times' % (step,
                                self.max_step_failures))
         step.run()
-        if step.result:
+        if step.complete:
             LOG.info('Completed step %s', step)
             self.curr_step += 1
         else:
             LOG.info('Step %s failed %d times so far', step, len(step.errors))
 
     def is_complete(self):
-        return self.curr_step >= len(self.steps)
+        return all([step.complete for step in self.steps])
 
     def all_errors(self):
         return [s.errors for s in self.steps]
