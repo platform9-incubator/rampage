@@ -9,6 +9,7 @@ setup(
     author='',
     author_email='',
     install_requires=[
+        'pylint',
         'python-keystoneclient',
         'python-novaclient',
         'python-cinderclient',
