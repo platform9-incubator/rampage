@@ -9,6 +9,7 @@ setup(
     author='',
     author_email='',
     install_requires=[
+        'paramiko',
         'pylint',
         'python-keystoneclient',
         'python-novaclient',
@@ -16,7 +17,8 @@ setup(
         'python-glanceclient',
         'python-neutronclient',
         'pyvmomi',
-        'requests'
+        'requests',
+        'scp'
     ],
     tests_require=[],
     test_suite='rampage.tests',
